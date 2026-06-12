@@ -76,9 +76,81 @@ When doing forecasting - the independent time variable is the index, and is on t
 
 The dependent variable being looked at, y is on the y-axis. The subscript t is added to this to refer to the value of the dependent variable at a particular moment in time.
 
-
+Time-series data can be plotted in pandas.
 
 #### Datetime index
+
+For pandas to recognise Time Series data - the index of the pandas `dataframe` needs to be a `datetime` object. To convert this:
+
+First list the data:
+
+```python
+df = pd.read_csv("data.csv")
+print(df.head().to_markdown(index=True))
+```
+
+|    | Date       |   Price |
+|---:|:-----------|--------:|
+|  0 | 2019-08-24 |      40 |
+|  1 | 2019-08-25 |      42 |
+|  2 | 2019-08-26 |      37 |
+|  3 | 2019-08-27 |      38 |
+|  4 | 2019-08-28 |      41 |
+
+Check the existing datatype:
+
+```python
+df.dtypes
+```
+
+```
+Date       str
+Price    int64
+dtype: object
+```
+
+The Date is recognised as a string data-type and not time-series, it therefore needs to be converted:
+
+```python
+df["Date"] = pd.to_datetime(df["Date"])
+print(df.head().to_markdown(index=True))
+```
+
+|    | Date                |   Price |
+|---:|:--------------------|--------:|
+|  0 | 2019-08-24 00:00:00 |      40 |
+|  1 | 2019-08-25 00:00:00 |      42 |
+|  2 | 2019-08-26 00:00:00 |      37 |
+|  3 | 2019-08-27 00:00:00 |      38 |
+|  4 | 2019-08-28 00:00:00 |      41 |
+
+```python
+df.dtypes
+```
+
+Date     datetime64[us]
+Price             int64
+dtype: object
+
+
+The time is in the correct format, and it can now be converted into the index:
+
+```python
+df.set_index("Date", inplace= True)
+print(df.head().to_markdown(index=True))
+```
+
+| Date                |   Price |
+|:--------------------|--------:|
+| 2019-08-24 00:00:00 |      40 |
+| 2019-08-25 00:00:00 |      42 |
+| 2019-08-26 00:00:00 |      37 |
+| 2019-08-27 00:00:00 |      38 |
+| 2019-08-28 00:00:00 |      41 |
+
+The Date is now the index - and pandas can now perform time-series analysis.
+
+Indexing via Time Series in pandas offers several advantages- and is worth it.
 
 #### Plotting, slicing, resampling time-series
 
