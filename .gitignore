@@ -1,0 +1,10 @@
+# Python - contains auto-generated python byte code and sensitive virtual environment info
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Secrets
+.env
+*.pem
+*.key
