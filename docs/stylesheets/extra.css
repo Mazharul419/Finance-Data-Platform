@@ -1,9 +1,9 @@
-/* Widen the content area */
+/* Widen the content area
 .md-grid {
   max-width: 90rem;
 }
 
-/* Pull sidebars closer to edges */
+Pull sidebars closer to edges
 .md-sidebar--primary {
   width: 12rem;
   padding-left: 0.5rem;
@@ -12,4 +12,4 @@
 .md-sidebar--secondary {
   width: 12rem;
   padding-right: 0.5rem;
-}
+} */
