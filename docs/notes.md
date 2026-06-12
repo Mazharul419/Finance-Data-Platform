@@ -82,30 +82,45 @@ Time-series data can be plotted in pandas.
 
 For pandas to recognise Time Series data - the index of the pandas `dataframe` needs to be a `datetime` object. To convert this:
 
-First list the data:
+First import relevant libraries:
 
 ```python
-df = pd.read_csv("data.csv")
+import pandas as pd
+import matplotlib as plt
+```
+
+Then import the data:
+
+```python
+df = pd.read_csv("Electric_Production.csv")
+
 print(df.head().to_markdown(index=True))
 ```
 
-|    | Date       |   Price |
-|---:|:-----------|--------:|
-|  0 | 2019-08-24 |      40 |
-|  1 | 2019-08-25 |      42 |
-|  2 | 2019-08-26 |      37 |
-|  3 | 2019-08-27 |      38 |
-|  4 | 2019-08-28 |      41 |
+|    | DATE     |   IPG2211A2N |
+|---:|:---------|-------------:|
+|  0 | 1/1/1985 |      72.5052 |
+|  1 | 2/1/1985 |      70.672  |
+|  2 | 3/1/1985 |      62.4502 |
+|  3 | 4/1/1985 |      57.4714 |
+|  4 | 5/1/1985 |      55.3151 |
 
-Check the existing datatype:
+Rename columns and check the existing datatype:
+
+```
+df = df.rename(columns={
+    "DATE": "Date",
+    "IPG2211A2N": "Value"
+})
+```
 
 ```python
 df.dtypes
 ```
 
 ```
-Date       str
-Price    int64
+Date         str
+Value    float64
 dtype: object
 ```
 
