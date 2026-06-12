@@ -127,11 +127,11 @@ print(df.head().to_markdown(index=True))
 ```python
 df.dtypes
 ```
-
+```
 Date     datetime64[us]
 Price             int64
 dtype: object
-
+```
 
 The time is in the correct format, and it can now be converted into the index:
 
