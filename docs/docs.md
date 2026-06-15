@@ -1,5 +1,17 @@
 # Structure
 
+Inspiration:
+
+Project Snowflake (Abdirahman): https://github.com/ABDIRAHMAN-I/Project-Snowflake
+
+DataBear stock data article: https://medium.com/@srlk/how-i-built-a-real-time-stock-data-pipeline-from-scratch-with-kafka-airflow-and-snowflake-f473f3f6e6bf
+
+Github: https://github.com/sarach-analytics/stock-market-analytics
+
+Stock-market analytics (Jay): https://github.com/Jay61616/real-time-stocks-mds
+
+
+
 ## Phase 1: Ingestion + Raw Landing (2–3 weeks)
 
 Type of data: S&P 1500 - contains 1500 tickers ~3.75M rows over 10 years.
