@@ -2,7 +2,17 @@
 
 ## Phase 1: Ingestion + Raw Landing (2–3 weeks)
 
-Pick a data source. 
+Type of data: S&P 1500 - contains 1500 tickers ~3.75M rows over 10 years.
+
+I want to be able to have a warehouse that can store millions of rows of data easily.
+
+Potentially look at intraday for the seperate portfolio drift tracking piece.
+
+Architecture: Medallion architecture [^1]
+
+<img src="https://www.databricks.com/sites/default/files/inline-images/building-data-pipelines-with-delta-lake-120823.png" alt="Building Reliable, Performant Data Pipelines with Delta Lake"/>
+
+Data source: yfinance
 
 Suggest Companies House API (UK-relevant, ties into your finance interest) or a free market data API (Alpha Vantage)
 
@@ -45,3 +55,5 @@ Add data quality monitoring (dbt tests are a start; consider Great Expectations 
 Architecture diagram (draw.io, as with ECS-Forge)
 
 MkDocs site documenting the pipeline, design decisions, and any "false positive"-style debugging stories — these make great LinkedIn posts
+
+[^1]: https://www.databricks.com/blog/what-is-medallion-architecture
