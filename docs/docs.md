@@ -14,7 +14,19 @@ Stock-market analytics (Jay): https://github.com/Jay61616/real-time-stocks-mds
 
 ## Phase 1: Ingestion + Raw Landing (2–3 weeks)
 
-Type of data: S&P 1500 - contains 1500 tickers ~3.75M rows over 10 years.
+Type of data: S&P 1500 - contains 1500 tickers 
+
+One-off Historical backfill - daily granularity:
+
+Open, High, Low, Close, Volume (OHLCV) data (standard data for tracking price movement and market activity of an asset)
+
+S&P 1500 tickers x 10 years of OHLCV data
+
+2520 trading days x 1500 tickers ~3.78M rows (~397MB)
+
+Forward accumalating data - intra-day granularity:
+
+
 
 I want to be able to have a warehouse that can store millions of rows of data easily.
 
