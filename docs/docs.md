@@ -16,7 +16,9 @@ Stock-market analytics (Jay): https://github.com/Jay61616/real-time-stocks-mds
 
 Type of data: S&P 1500 - contains 1500 tickers 
 
-One-off Historical backfill - daily granularity:
+### One-off Historical backfill:
+
+Daily granularity
 
 Open, High, Low, Close, Volume (OHLCV) data (standard data for tracking price movement and market activity of an asset)
 
@@ -24,9 +26,15 @@ S&P 1500 tickers x 10 years of OHLCV data
 
 2520 trading days x 1500 tickers ~3.78M rows (~397MB)
 
-Forward accumalating data - intra-day granularity:
+https://pythonfintech.com/articles/how-to-download-market-data-yfinance-python/
+
+https://stackoverflow.com/questions/63107594/how-to-deal-with-multi-level-column-names-downloaded-with-yfinance/63107801#63107801
 
 
+
+### Forward accumalating data:
+
+Intra-day granularity
 
 I want to be able to have a warehouse that can store millions of rows of data easily.
 
