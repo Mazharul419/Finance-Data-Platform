@@ -169,14 +169,148 @@ Indexing via Time Series in pandas offers several advantages- and is worth it.
 
 #### Plotting, slicing, resampling time-series
 
-#### Handling outliers and missing values
+See jupyter notebook.
+
+#### Handling outliers
 
 
+#### Missing values
+
+When you have time-series data in python, the indices are set to datetime format. These can be unevenly spaced.
+
+This means if there are missing observations from the index python won't notice them using typical methods such as .isna().sum() and .info(), so you can't rely on null counts for data.
 
 
+To get a view of the data in order - perform a `.sort_index` method on the Dataframe with `ascending=True` argument.
+
+`df=df.sort_index(ascending=True)`
+
+`df.head()`
+
+| date                |   temperature |
+|:--------------------|--------------:|
+| 1966-01-01 00:00:00 |          18.1 |
+| 1966-01-02 00:00:00 |          20.5 |
+| 1966-01-03 00:00:00 |          20.3 |
+| 1966-01-04 00:00:00 |          20.3 |
+| 1966-01-05 00:00:00 |          20.6 |
 
 
+Taking a look at nulls:
 
+```py
+df.info()
+<class 'pandas.DataFrame'>
+DatetimeIndex: 19710 entries, 1966-01-01 to 2019-12-31
+Data columns (total 1 columns):
+ #   Column       Non-Null Count  Dtype  
+---  ------       --------------  -----  
+ 0   temperature  19710 non-null  float64
+dtypes: float64(1)
+memory usage: 308.0 KB
+```
+
+There do not appear to be nulls present, however there may be null values where the index is missing i.e., you are looking at daily data and one of the days is missing.
+
+To identify these, convert the time-series frequency to daily using the `.asfreq()` method
+
+This will ensure the time series for the data range has every day contained, surfacing the nulls:
+
+```
+auckland = auckland.asfreq('D')
+
+D for daily, if monthly use ME
+
+Checking again for missing values:
+
+```py
+auckland.info()
+<class 'pandas.DataFrame'>
+DatetimeIndex: 19723 entries, 1966-01-01 to 2019-12-31
+Freq: D
+Data columns (total 1 columns):
+ #   Column       Non-Null Count  Dtype  
+---  ------       --------------  -----  
+ 0   temperature  19710 non-null  float64
+dtypes: float64(1)
+memory usage: 308.2 KB
+```
+
+There are now 19823 rows, with 19710 non-nulls, resulting in 13 null-values
+
+To find where these are use the `.isna()` method:
+
+```py
+auckland[auckland['temperature'].isna()]
+```
+
+| date                |   temperature |
+|:--------------------|--------------:|
+| 1966-09-13 00:00:00 |           nan |
+| 1969-02-27 00:00:00 |           nan |
+| 1971-04-11 00:00:00 |           nan |
+| 1974-04-12 00:00:00 |           nan |
+| 1974-05-07 00:00:00 |           nan |
+| 1974-10-25 00:00:00 |           nan |
+| 1977-07-02 00:00:00 |           nan |
+| 1980-02-23 00:00:00 |           nan |
+| 1981-03-04 00:00:00 |           nan |
+| 1987-02-19 00:00:00 |           nan |
+| 1992-11-12 00:00:00 |           nan |
+| 1995-04-06 00:00:00 |           nan |
+| 1995-07-31 00:00:00 |           nan |
+
+To fix these values, you can use the fillna() function to perform this - with options:
+
+- Forward-fill: Fills missing values with the previous value - `ffill()`
+- Backward-fill: Fills missing values with the next value
+- Interpolation: Fills missing values with an estimate based on the available data
+
+In this case forward-fill is used:
+
+`auckland=auckland.ffill()`
+
+```py
+md(auckland.loc[['1966-09-13', '1969-02-27', '1971-04-11', '1974-04-12', 
+        '1974-05-07', '1974-10-25', '1977-07-02', '1980-02-23',
+        '1981-03-04', '1987-02-19', '1992-11-12', '1995-04-06', 
+        '1995-07-31']])
+```
+
+| date                |   temperature |
+|:--------------------|--------------:|
+| 1966-09-13 00:00:00 |           8.6 |
+| 1969-02-27 00:00:00 |          18.6 |
+| 1971-04-11 00:00:00 |          17.7 |
+| 1974-04-12 00:00:00 |          15.4 |
+| 1974-05-07 00:00:00 |          12.4 |
+| 1974-10-25 00:00:00 |          13.3 |
+| 1977-07-02 00:00:00 |          13.3 |
+| 1980-02-23 00:00:00 |          20.8 |
+| 1981-03-04 00:00:00 |          22.6 |
+| 1987-02-19 00:00:00 |          17.2 |
+| 1992-11-12 00:00:00 |          17   |
+| 1995-04-06 00:00:00 |          21.2 |
+| 1995-07-31 00:00:00 |           8.7 |
+
+These are all filled in.
+
+Checking the null count:
+
+```py
+auckland.info()
+<class 'pandas.DataFrame'>
+DatetimeIndex: 19723 entries, 1966-01-01 to 2019-12-31
+Freq: D
+Data columns (total 1 columns):
+ #   Column       Non-Null Count  Dtype  
+---  ------       --------------  -----  
+ 0   temperature  19723 non-null  float64
+dtypes: float64(1)
+memory usage: 824.2 KB
+```
+
+The entries are same as the non-null count, therefore there are no nulls present.
 
 ## Examples
 
