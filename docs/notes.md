@@ -312,6 +312,43 @@ memory usage: 824.2 KB
 
 The entries are same as the non-null count, therefore there are no nulls present.
 
+### Model Planning
+
+This phase involves determining the methods, techniques, and workflows needed for Model building.
+
+One important component of this where the time series data is broken down is called Decomposition.
+
+#### Decomposition
+
+Time-series can be decomposed into:
+
+- Level: The average value of the series - i.e.,  the baseline in absence of patterns
+- Signal: The true underlying process that generated the data, consists of Trend and seasonality
+- Noise: Variability in data due to randomness
+
+##### Signal
+
+There are two types:
+
+- Trend: Increasing or decreasing behaviour of a series over time can be linear, exponential or quadratic
+- Seasonality: Represents repeating cycles that have similar time intervals
+
+##### Noise
+
+After trend and seasonality, what variation would be left? These residuals are known as noise.
+
+##### Cycle
+
+Another recurring pattern in data similar to season, but has varying lengths - typically due to business cycles and economic conditions.
+
+##### Additive and Multiplicative
+
+The way the above components interact with each other, can either be additive or multiplicative.
+
+- Multiplicative: As the level of the time series increases, the value and size of seasonal and residual fluctuations varies.
+
+- Additive: As the level of the time series increases, the value and size of seasonal and residual fluctuations remain the same.
+
 ## Examples
 
 ### Admonitions
