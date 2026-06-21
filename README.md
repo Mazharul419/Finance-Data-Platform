@@ -1,0 +1,1 @@
+![alt text](<Finance Data Platform 14.06-Diagram Detailed.svg>)
