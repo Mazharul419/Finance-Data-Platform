@@ -30,9 +30,65 @@ https://pythonfintech.com/articles/how-to-download-market-data-yfinance-python/
 
 https://stackoverflow.com/questions/63107594/how-to-deal-with-multi-level-column-names-downloaded-with-yfinance/63107801#63107801
 
-To get this first import the `yfinance` package:
+To get this first import the relevant packages:
 
-`import yfinance as yf`
+```py
+import pandas as pd
+import lxml
+import requests
+import yfinance as yf
+from io import StringIO
+```
+
+To make the requests for all tickers in the S&P500 for the past 5 years, they need to be identified. 
+
+To do this the table listing these on the [Wikipedia site](https://en.wikipedia.org/wiki/List_of_S%26P_500_companies) will be used:
+
+To pull this however, a user-agent (a way of websites identifying the client accessing the browser) is defined too:
+
+```py
+url= "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
+headers= {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+```
+
+The response is produced and stringIO alongside pd.read_html is used to parse and obtain the first table [0] identified:
+
+```py
+response=requests.get(url, headers=headers)
+
+sp500=pd.read_html(StringIO(response.text))[0]
+sp500
+```
+![alt text](image-5.png)
+
+Checking out the table:
+
+```py
+sp500.info()
+<class 'pandas.DataFrame'>
+RangeIndex: 503 entries, 0 to 502
+Data columns (total 8 columns):
+ #   Column                 Non-Null Count  Dtype
+---  ------                 --------------  -----
+ 0   Symbol                 503 non-null    str  
+ 1   Security               503 non-null    str  
+ 2   GICS Sector            503 non-null    str  
+ 3   GICS Sub-Industry      503 non-null    str  
+ 4   Headquarters Location  503 non-null    str  
+ 5   Date added             503 non-null    str  
+ 6   CIK                    503 non-null    int64
+ 7   Founded                503 non-null    str  
+dtypes: int64(1), str(7)
+memory usage: 31.6 KB
+```
+
+The table contains 503 tickers - this is expected since the S&P500 sometimes has dual-class shares.
+
+String replaced is performed due to yfinance API identifying hyphenated `-` as opposed to dot `.` nomenclature for some companies, so these must be converted:
+
+`sp500['Symbol']=sp500['Symbol'].str.replace(".", "-", regex=False)`
+
+This is explained further in the [appendix section](#brkb-bfb-not-being-recognised) section
 
 Define the ticker symbols to download:
 
