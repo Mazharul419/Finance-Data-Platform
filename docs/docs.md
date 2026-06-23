@@ -61,27 +61,6 @@ sp500
 ```
 ![alt text](image-5.png)
 
-Checking out the table:
-
-```py
-sp500.info()
-<class 'pandas.DataFrame'>
-RangeIndex: 503 entries, 0 to 502
-Data columns (total 8 columns):
- #   Column                 Non-Null Count  Dtype
----  ------                 --------------  -----
- 0   Symbol                 503 non-null    str  
- 1   Security               503 non-null    str  
- 2   GICS Sector            503 non-null    str  
- 3   GICS Sub-Industry      503 non-null    str  
- 4   Headquarters Location  503 non-null    str  
- 5   Date added             503 non-null    str  
- 6   CIK                    503 non-null    int64
- 7   Founded                503 non-null    str  
-dtypes: int64(1), str(7)
-memory usage: 31.6 KB
-```
-
 The table contains 503 tickers - this is expected since the S&P500 sometimes has dual-class shares.
 
 String replaced is performed due to yfinance API identifying hyphenated `-` as opposed to dot `.` nomenclature for some companies, so these must be converted:
@@ -92,30 +71,89 @@ This is explained further in the [appendix section](#brkb-bfb-not-being-recognis
 
 Define the ticker symbols to download:
 
-`tickerStrings = ['AAPL', 'MSFT']`
+`tickerStrings = sp500['Symbol'].tolist()'
 
-!!! info
-
-    Full list is in the `Data_import` Jupyter notebook
+This references the table in the wikipedia page containing the tickers info - saved as a pandas dataframe. The `Symbol` column is referenced from `sp500['Symbol']' and is converted to a list due to the yfinance API only accepting lists for multiple downloads.
 
 Download the OHLCV data using the `yf.download` function and preview the data:
 
 ```py
-df = yf.download(tickerStrings, group_by='Ticker', period='1mo')
+df = yf.download(tickerStrings, group_by='Ticker', period='5y')
+df
 ```
+![alt text](image-6.png)
+
 This has row index `Date` and column indexes `Price` and `Ticker`.
 
 The data needs to be one row per ticker per date, in order to identify rows best and store it better.
 
 To do this the `df.stack()` function is used to pivot the ticker information to rows:
-
-![alt text](image-1.png)
+```py
+df = df.stack(level=0).rename_axis(['Date', 'Ticker']).reset_index()
+df
+```
+![alt text](image-7.png)
 
 The column index `Price` still remains, and is confusing, therefore it needs to be deleted:
+```py
+df.columns.name = None
+df
+```
+![alt text](image-8.png)
 
-![alt text](image-2.png)
+A null-checker/validator is present in the script which checks for null values within the data:
 
+```py
+def validate_download(df, expected_tickers, ohlcv_cols=["Open", "High", "Low", "Close", "Volume"]): # (1)!
+    
+    downloaded_tickers = set(df["Ticker"].unique())
+    fully_missing = set(expected_tickers) - downloaded_tickers
 
+    # Per-column null counts per ticker
+    null_by_col = (
+        df.groupby("Ticker")[ohlcv_cols]
+        .apply(lambda x: x.isna().sum())
+    )
+    
+    # Total nulls across all OHLCV columns per ticker
+    null_by_col["Total"] = null_by_col.sum(axis=1)
+    
+    # Only show tickers that have at least one null
+    has_nulls = null_by_col[null_by_col["Total"] > 0]
+    
+    # Distinguish fully null vs partially null
+    row_counts = df.groupby("Ticker").size()
+    max_possible_nulls = row_counts * len(ohlcv_cols)
+    
+    fully_null_mask = has_nulls["Total"] == max_possible_nulls[has_nulls.index]
+    fully_null = has_nulls[fully_null_mask]
+    partially_null = has_nulls[~fully_null_mask]
+
+    # Report
+    print(f"Total tickers expected : {len(expected_tickers)}")
+    print(f"Total tickers downloaded: {len(downloaded_tickers)}")
+
+    if fully_missing:
+        print(f"\nFully missing (not in df at all): {fully_missing}")
+    else:
+        print("\nFully missing: none")
+
+    if len(fully_null) > 0:
+        print(f"\nPresent but completely null (failed download):")
+        print(fully_null.to_string())
+    else:
+        print("\nCompletely null tickers: none")
+
+    if len(partially_null) > 0:
+        print(f"\nPartially null (recent IPO/spin-off) — breakdown by column:")
+        print(partially_null.to_string())
+    else:
+        print("\nPartially null tickers: none")
+
+    return fully_missing, fully_null, partially_null
+```
+
+1. This is a function which takes the produced Dataframe `df`, the expected tickers from the wikipedia page `expected tickers` and defines the particular OHLCV columns being checked for nulls `ohlcv_cols`
 
 ### Forward accumalating data:
 
