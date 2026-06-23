@@ -10,7 +10,7 @@ Github: https://github.com/sarach-analytics/stock-market-analytics
 
 Stock-market analytics (Jay): https://github.com/Jay61616/real-time-stocks-mds
 
-
+<img src="https://github.com/Mazharul419/Finance-Data-Platform/raw/main/Finance%20Data%20Platform%2014.06-Diagram%20Detailed.svg" alt="alt text"/>
 
 ## Phase 1: Ingestion + Raw Landing (2–3 weeks)
 
@@ -106,31 +106,27 @@ A null-checker/validator is present in the script which checks for null values w
 ```py
 def validate_download(df, expected_tickers, ohlcv_cols=["Open", "High", "Low", "Close", "Volume"]): # (1)!
     
-    downloaded_tickers = set(df["Ticker"].unique())
-    fully_missing = set(expected_tickers) - downloaded_tickers
+    downloaded_tickers = set(df["Ticker"].unique()) # (2)!
+    fully_missing = set(expected_tickers) - downloaded_tickers # (3)!
 
-    # Per-column null counts per ticker
-    null_by_col = (
+    
+    null_by_col = (#(4)!
         df.groupby("Ticker")[ohlcv_cols]
         .apply(lambda x: x.isna().sum())
-    )
+    ) 
     
-    # Total nulls across all OHLCV columns per ticker
-    null_by_col["Total"] = null_by_col.sum(axis=1)
+    null_by_col["Total"] = null_by_col.sum(axis=1) # (5)!
     
-    # Only show tickers that have at least one null
-    has_nulls = null_by_col[null_by_col["Total"] > 0]
+    has_nulls = null_by_col[null_by_col["Total"] > 0] # (6)!
     
-    # Distinguish fully null vs partially null
-    row_counts = df.groupby("Ticker").size()
+    row_counts = df.groupby("Ticker").size() # (7)!
     max_possible_nulls = row_counts * len(ohlcv_cols)
     
     fully_null_mask = has_nulls["Total"] == max_possible_nulls[has_nulls.index]
     fully_null = has_nulls[fully_null_mask]
     partially_null = has_nulls[~fully_null_mask]
 
-    # Report
-    print(f"Total tickers expected : {len(expected_tickers)}")
+    print(f"Total tickers expected : {len(expected_tickers)}") # (8)!
     print(f"Total tickers downloaded: {len(downloaded_tickers)}")
 
     if fully_missing:
@@ -150,11 +146,28 @@ def validate_download(df, expected_tickers, ohlcv_cols=["Open", "High", "Low", "
     else:
         print("\nPartially null tickers: none")
 
-    return fully_missing, fully_null, partially_null
+    return fully_missing, fully_null, partially_null # (10)!
 ```
 
 1. This is a function which takes the produced Dataframe `df`, the expected tickers from the wikipedia page `expected tickers` and defines the particular OHLCV columns being checked for nulls `ohlcv_cols`
 
+2. Lists distinct Tickers using the `unique` method, converted to `set` to allow subtraction
+
+3. Subtracts expected tickers from downloaded tickers, leaving missing tickers 
+
+4. Per-column null counts per ticker
+
+5. Total nulls across all OHLCV columns per ticker 
+
+6. Only show tickers that have at least one null
+
+7. Distinguish fully null vs partially null
+
+8. Report
+
+9. 
+
+10. 
 ### Forward accumalating data:
 
 Daily granularity
