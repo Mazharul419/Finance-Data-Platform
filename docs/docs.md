@@ -109,24 +109,45 @@ def validate_download(df, expected_tickers, ohlcv_cols=["Open", "High", "Low", "
     downloaded_tickers = set(df["Ticker"].unique()) # (2)!
     fully_missing = set(expected_tickers) - downloaded_tickers # (3)!
 
-    
-    null_by_col = (#(4)!
+    null_by_col = ( # (4)!
         df.groupby("Ticker")[ohlcv_cols]
         .apply(lambda x: x.isna().sum())
-    ) 
-    
+    )
     null_by_col["Total"] = null_by_col.sum(axis=1) # (5)!
-    
     has_nulls = null_by_col[null_by_col["Total"] > 0] # (6)!
+
+    valid_dates = ( # (7)!
+        df[df["Close"].notna()]
+        .groupby("Ticker")["Date"]
+        .agg(
+            first_valid_date="min",
+            last_valid_date="max"
+        )
+    )
+
+    backfill_start = df["Date"].min() # (9)!
     
-    row_counts = df.groupby("Ticker").size() # (7)!
-    max_possible_nulls = row_counts * len(ohlcv_cols)
+
+    all_trading_days = df["Date"].drop_duplicates().sort_values() # (10)!
     
+    def count_trading_days_before(first_valid_date): # (11)!
+        return (all_trading_days < first_valid_date).sum()
+    
+    valid_dates["trading_days_before_listing"] = valid_dates["first_valid_date"].apply(
+        count_trading_days_before
+    ) # (8)!
+
+    row_counts = df.groupby("Ticker").size() # (12)!
+    max_possible_nulls = row_counts * len(ohlcv_cols) # (13)!
     fully_null_mask = has_nulls["Total"] == max_possible_nulls[has_nulls.index]
     fully_null = has_nulls[fully_null_mask]
-    partially_null = has_nulls[~fully_null_mask]
+    partially_null = has_nulls[~fully_null_mask].sort_values("Total", ascending=False)
 
-    print(f"Total tickers expected : {len(expected_tickers)}") # (8)!
+
+    partially_null_summary = partially_null.join(valid_dates, how="left") # (14)!
+
+    # Report
+    print(f"Total tickers expected:  {len(expected_tickers)}")
     print(f"Total tickers downloaded: {len(downloaded_tickers)}")
 
     if fully_missing:
@@ -140,13 +161,13 @@ def validate_download(df, expected_tickers, ohlcv_cols=["Open", "High", "Low", "
     else:
         print("\nCompletely null tickers: none")
 
-    if len(partially_null) > 0:
-        print(f"\nPartially null (recent IPO/spin-off) — breakdown by column:")
-        print(partially_null.to_string())
+    if len(partially_null_summary) > 0:
+        print(f"\nPartially null (recent IPO/spin-off) — breakdown by column + valid date range:\n")
+        print(partially_null_summary.to_string())
     else:
         print("\nPartially null tickers: none")
 
-    return fully_missing, fully_null, partially_null # (10)!
+    return fully_missing, fully_null, partially_null_summary
 ```
 
 1. This is a function which takes the produced Dataframe `df`, the expected tickers from the wikipedia page `expected tickers` and defines the particular OHLCV columns being checked for nulls `ohlcv_cols`
@@ -161,13 +182,20 @@ def validate_download(df, expected_tickers, ohlcv_cols=["Open", "High", "Low", "
 
 6. Only show tickers that have at least one null
 
-7. Distinguish fully null vs partially null
+7. First and last valid (non-null) date per ticker
 
-8. Report
+9. Get the earliest date in your entire dataset (start of your backfill window)
 
-9. 
+10. Count trading days between backfill start and first valid date per ticker. Trading days = number of dates that appear in the df for any ticker 
 
-10. 
+11. 
+
+12. 
+
+13. Distinguishes fully null vs partially null - `.size` counts how many rows are in each Ticker, representing the maximum possible nulls - Needed to distinguish failed download (max nulls) vs missing values.
+
+14. Join valid date info onto partially null summary
+
 ### Forward accumalating data:
 
 Daily granularity
