@@ -38,7 +38,22 @@ import lxml
 import requests
 import yfinance as yf
 from io import StringIO
+import pprint
 ```
+
+`pandas` - for data manipulation
+`lxml` - for pandas to use read_html function - default parser it uses
+`requests` - for making the HTTP request via useragent to return HTML
+`yfinance` - the API for getting market OHLCV data
+`StringIO` - converts string to a in-memory file-like object that can be parsed
+`pprint` - pretty prints the HTML output for easy viewing
+
+https://stackoverflow.com/questions/7996479/what-is-stringio-in-python-used-for-in-reality
+https://lxml.de/parsing.html
+https://docs.python.org/3/library/io.html#io.StringIO
+https://docs.python.org/3/library/pprint.html
+https://pandas.pydata.org/docs/reference/api/pandas.read_html.html
+
 
 To make the requests for all tickers in the S&P500 for the past 5 years, they need to be identified. 
 
