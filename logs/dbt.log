@@ -1,0 +1,67 @@
+==================== 2026-07-13T07:00:41.865615Z | 019f5a47-2c33-7280-b4c5-c79fa683cc44 ====================
+07:00:41.868714 [info ]: Installing dbt project and profile setup
+07:00:41.951443 [info ]: Info Created .vscode/extensions.json with dbt extension recommendation
+07:00:41.952587 [info ]: Success Project created successfully!
+07:00:41.952977 [info ]: Info Project name: jaffle_shop
+07:00:41.953301 [info ]: Info Project directory: jaffle_shop
+07:00:41.953620 [info ]: Info Setting up your profile...
+07:00:42.056776 [info ]: Info Creating new profile...
+07:00:55.559450 [info ]: No dbt_cloud.yml found - proceeding without cloud pre-population
+07:15:50.322345 [error]: [IoError (dbt1001)]: Failed to get input for role: IO error: read interrupted
+07:15:50.491926 [info ]: 
+==================== Execution Summary =====================
+Finished 'init' with 1 error [15m 9s]
+==================== 2026-07-13T07:15:54.038154Z | 019f5a55-182d-70a0-8b60-bc184ed898af ====================
+07:15:54.038519 [info ]: Installing dbt project and profile setup
+07:15:54.039425 [info ]: Warning Directory 'jaffle_shop' already exists, using 'jaffle_shop_1' instead
+07:15:54.046521 [info ]: Info Created .vscode/extensions.json with dbt extension recommendation
+07:15:54.046649 [info ]: Success Project created successfully!
+07:15:54.046890 [info ]: Info Project name: jaffle_shop_1
+07:15:54.046937 [info ]: Info Project directory: jaffle_shop_1
+07:15:54.046961 [info ]: Info Setting up your profile...
+07:15:54.047169 [info ]: Info Creating new profile...
+07:15:55.649808 [info ]: No dbt_cloud.yml found - proceeding without cloud pre-population
+07:17:07.214547 [error]: [IoError (dbt1001)]: Failed to get input for warehouse: IO error: read interrupted
+07:17:07.259064 [info ]: 
+==================== Execution Summary =====================
+Finished 'init' with 1 error [1m 13s]
+==================== 2026-07-13T07:17:14.322296Z | 019f5a56-51cd-7912-87d9-1390f03cbf33 ====================
+07:17:14.322786 [info ]: Installing dbt project and profile setup
+07:17:14.323281 [info ]: Warning Directory 'jaffle_shop' already exists, using 'jaffle_shop_2' instead
+07:17:14.338840 [info ]: Info Created .vscode/extensions.json with dbt extension recommendation
+07:17:14.339066 [info ]: Success Project created successfully!
+07:17:14.339128 [info ]: Info Project name: jaffle_shop_2
+07:17:14.339173 [info ]: Info Project directory: jaffle_shop_2
+07:17:14.339214 [info ]: Info Setting up your profile...
+07:17:14.339486 [info ]: Info Creating new profile...
+07:17:16.553793 [info ]: No dbt_cloud.yml found - proceeding without cloud pre-population
+07:20:19.071453 [info ]: Success Profile written to /home/mazharulislam419/.dbt/profiles.yml
+07:20:19.071766 [info ]: Validating profile inputs, adapters, and connection
+
+07:20:19.071902 [info ]: dbt-fusion 2.0.0-preview.193
+07:20:19.094492 [info ]: Started loading project
+07:20:19.106356 [info ]: Loading ~/.dbt/profiles.yml
+07:20:19.152569 [info ]: Finished loading project [  0.06s]
+07:20:19.179765 [info ]: Started debugging
+07:20:19.179997 [info ]: Debugging profile: dev
+07:20:19.180072 [info ]: Debugging dbt version: 2.0.0-preview.193
+07:20:19.180098 [info ]: Debugging platform: linux aarch64 (unix)
+07:20:19.180155 [info ]: Debugging adapter type: snowflake (remote)
+07:20:19.189453 [info ]: Debugging dependencies:
+  git: OK
+07:20:19.221167 [info ]: Debugging connection:
+  "account": "NWMLUML-QX26720",
+  "user": "MAZHARULISLAM419",
+  "database": "learn_analytics",
+  "warehouse": "snowflake_learning_wh",
+  "schema": "analytics_prod",
+  "role": "accountadmin"
+07:20:23.313745 [debug]: Query executed on node unknown:
+select 1 as id
+07:20:23.340475 [info ]: Debugging connection test: OK
+07:20:23.340977 [info ]: Debugged All checks passed!
+07:20:23.341309 [info ]: Finished debugging [  4.16s]
+07:20:23.865897 [info ]: New version available 2.0.0-preview.196 (run `pip install --pre --upgrade dbt`)
+07:20:23.933833 [info ]: 
+==================== Execution Summary =====================
+Finished 'init' successfully for target 'dev' [3m 10s]

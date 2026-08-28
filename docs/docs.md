@@ -188,7 +188,7 @@ def validate_download(df, expected_tickers, ohlcv_cols=["Open", "High", "Low", "
 
 10. Count trading days between backfill start and first valid date per ticker. Trading days = number of dates that appear in the df for any ticker 
 
-11. 
+11. Returns all the trading days elapsed since the 
 
 12. 
 
