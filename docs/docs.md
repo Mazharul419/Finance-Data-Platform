@@ -18,6 +18,34 @@ Type of data: S&P 500 ticker-level OHLCV* data
 
 *Open, High, Low, Close, Volume data - Standard data for tracking price movement and market activity of an asset
 
+1. One-off backfill
+Script imports all 503 tickers
+Check all 503 made it
+Check for nulls
+
+Just report on the one-off backfill and mention you've corrected it
+
+```
+Total tickers expected:  503
+Total tickers downloaded: 503
+
+Fully missing: none
+
+Present but completely null (failed download):
+        Open  High  Low  Close  Volume  Total
+Ticker                                       
+BMY        1     1    1      1       1      5
+FIS        1     1    1      1       1      5
+MU         1     1    1      1       1      5
+TSN        1     1    1      1       1      5
+
+Partially null tickers: none
+```
+
+
+
+2. Daily ingestion script
+
 ### One-off Historical backfill:
 
 Daily granularity
@@ -66,11 +94,35 @@ url= "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
 headers= {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
 ```
 
-The response is produced and stringIO alongside pd.read_html is used to parse and obtain the first table [0] identified:
+The response is produced and is stored in-memory as a stringIO object, which can be read - a preview of the output is shown and pretty-printed:
+
+```
+response=requests.get(url, headers=headers)
+output=StringIO(response.text)
+pprint.pp(output.getvalue())
+```
+output:
+```
+('<!DOCTYPE html>\n'
+ '<html class="client-nojs vector-feature-language-in-header-enabled '
+ 'vector-feature-language-in-main-menu-disabled '
+ 'vector-feature-language-in-main-page-header-disabled '
+ 'vector-feature-page-tools-pinned-disabled '
+ 'vector-feature-toc-pinned-clientpref-1 '
+ 'vector-feature-main-menu-pinned-disabled '
+ 'vector-feature-limited-width-clientpref-1 '
+ 'vector-feature-limited-width-content-enabled '
+ 'vector-feature-custom-font-size-clientpref-1 '
+ 'vector-feature-appearance-pinned-clientpref-1 skin-theme-clientpref-day '
+ 'vector-feature-navigation-update-disabled vector-sticky-header-enabled '
+ 'vector-toc-available skin-thumbsize-clientpref-standard" lang="en" '
+ 'dir="ltr">\n'
+ '<head>\n'
+```
+
+`pd.read_html` function is used to parse this html and obtain the first table [0] identified
 
 ```py
-response=requests.get(url, headers=headers)
-
 sp500=pd.read_html(StringIO(response.text))[0]
 sp500
 ```
